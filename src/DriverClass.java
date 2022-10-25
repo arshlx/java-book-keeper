@@ -4,11 +4,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class DriverClass {
     private static final PrintStream syso = System.out;
     private static final Scanner scan = new Scanner(System.in);
     private static final Gson gson = new Gson();
+    private static List<Book> filteredList = List.of();
     private static Book scratchBook = new Book("test", "1234", 0.99, 1, 0, "Teat Author", 1, "2012", 100, 0);
     private static List<Book> books = new ArrayList<>();
 
@@ -31,33 +33,234 @@ public class DriverClass {
         syso.println("Please select the index number of the operation that you want to perform: ");
         int selOption = scan.nextInt();
         switch (selOption) {
-            case 1 -> {
+            case 1: {
                 showAllRecords();
                 generateMainMenu();
             }
 
-            case 2 -> {
-            }
+            case 2:
+                searchRecords();
 
-            case 3 -> addBook();
+            case 3:
+                addBook();
 
-            case 4 -> deleteBook();
+            case 4:
+                deleteBook();
 
-            case 5 -> modifyBook(true);
+            case 5:
+                modifyBook(true);
 
-            case 6 -> discountInventory();
+            case 6:
+                discountInventory();
 
-            case 7 -> viewIndividualRecords(true, false, false);
+            case 7:
+                viewIndividualRecords(true, false, false);
 
-            case 8 -> purgeAndResetRecords();
+            case 8:
+                purgeAndResetRecords();
 
-            case 9 -> System.exit(0);
+            case 9:
+                System.exit(0);
 
-            default -> {
+            default: {
                 syso.println("Invalid choice, please select again.\n");
                 generateMainMenu();
             }
         }
+    }
+
+    private static void searchRecords() {
+        syso.println("Search by\n1. Title\n2. Author\n3. ISBN\n4. Price\n5. Quantity\n6. Number of books available\n7. Edition\n8. Release year\n9. Number of pages\n10. Discount percentage");
+        syso.println("Please enter index number of your search parameter: ");
+        var selChoice = scan.nextInt();
+        while (true) {
+            if (selChoice > 0 && selChoice < 10)
+                break;
+            else {
+                syso.println("Invalid choice, please try again.");
+                syso.println("Please enter index number of your search parameter: ");
+                selChoice = scan.nextInt();
+            }
+        }
+        searchBy(selChoice);
+    }
+
+    private static void searchBy(int selChoice) {
+        filteredList.clear();
+        switch (selChoice) {
+            case 1: {
+                syso.println("Please enter the title: ");
+                scan.nextLine();
+                var searchPhrase = scan.nextLine();
+                var searchWords = searchPhrase.split(" ", 4);
+                filteredList = books.stream().filter(it -> it.title.contains(searchWords[0]) || it.title.contains(searchWords[1]) || it.title.contains(searchWords[2]) || it.title.contains(searchWords[3])).collect(Collectors.toList());
+                break;
+            }
+            case 2: {
+                syso.println("Please enter the author name: ");
+                scan.nextLine();
+                var searchPhrase = scan.nextLine();
+                filteredList = books.stream().filter(it -> it.authors.contains(searchPhrase)).collect(Collectors.toList());
+                break;
+            }
+            case 3: {
+                syso.println("Please enter the ISBN: ");
+                scan.nextLine();
+                var searchPhrase = scan.nextLine();
+                filteredList = books.stream().filter(it -> it.isbn.contains(searchPhrase)).collect(Collectors.toList());
+                break;
+            }
+            case 4: {
+                syso.println("Please enter the price range.\nMinimum price: ");
+                var min = scan.nextInt();
+                syso.println("Maximum price");
+                var max = scan.nextInt();
+                if (max > min)
+                    filteredList = books.stream().filter(it -> it.price <= max && it.price >= min).collect(Collectors.toList());
+                else if (max == min)
+                    filteredList = books.stream().filter(it -> it.price == min).collect(Collectors.toList());
+                else
+                    filteredList = books.stream().filter(it -> it.price <= min && it.price >= max).collect(Collectors.toList());
+                break;
+            }
+            case 5: {
+                syso.println("Please enter quantity: ");
+                var quantity = scan.nextInt();
+                syso.println("1. See books with quantity greater than and equal to " + quantity);
+                syso.println("2. See books with quantity less than and equal to " + quantity);
+                syso.println("3. See books with quantity greater than " + quantity);
+                syso.println("4. See books with quantity less than " + quantity);
+                syso.println("Please enter the index number of the type of filter: ");
+                var choice = scan.nextInt();
+                while (true) {
+                    if (choice > 0 && choice < 5) break;
+                    else {
+                        syso.println("Invalid choice, please enter your choice again: ");
+                        choice = scan.nextInt();
+                    }
+                }
+
+                switch (choice) {
+                    case 1:
+                        filteredList = books.stream().filter(it -> it.quantity >= quantity).collect(Collectors.toList());
+                    case 2:
+                        filteredList = books.stream().filter(it -> it.quantity <= quantity).collect(Collectors.toList());
+                    case 3:
+                        filteredList = books.stream().filter(it -> it.quantity > quantity).collect(Collectors.toList());
+                    case 4:
+                        filteredList = books.stream().filter(it -> it.quantity < quantity).collect(Collectors.toList());
+                }
+
+                break;
+            }
+            case 6: {
+                syso.println("Please enter number of available books: ");
+                var available = scan.nextInt();
+                syso.println("1. See which books have available greater than and equal to " + available);
+                syso.println("2. See which books have available less than and equal to " + available);
+                syso.println("3. See which books have available greater than " + available);
+                syso.println("4. See which books have available less than " + available);
+                syso.println("Please enter the index number of the type of filter: ");
+                var choice = scan.nextInt();
+                while (true) {
+                    if (choice > 0 && choice < 5) break;
+                    else {
+                        syso.println("Invalid choice, please enter your choice again: ");
+                        choice = scan.nextInt();
+                    }
+                }
+
+                switch (choice) {
+                    case 1:
+                        filteredList = books.stream().filter(it -> it.numAvailable >= available).collect(Collectors.toList());
+                    case 2:
+                        filteredList = books.stream().filter(it -> it.numAvailable <= available).collect(Collectors.toList());
+                    case 3:
+                        filteredList = books.stream().filter(it -> it.numAvailable > available).collect(Collectors.toList());
+                    case 4:
+                        filteredList = books.stream().filter(it -> it.numAvailable < available).collect(Collectors.toList());
+                }
+            }
+            case 7: {
+                syso.println("Please enter edition number: ");
+                var edition = scan.nextInt();
+                filteredList = books.stream().filter(it -> it.edition <= edition).collect(Collectors.toList());
+            }
+            case 8: {
+            }
+            case 9: {
+            }
+            case 10: {
+                syso.println("Please enter quantity: ");
+                var discount = scan.nextInt();
+                syso.println("1. See books with quantity greater than and equal to " + discount);
+                syso.println("2. See books with quantity less than and equal to " + discount);
+                syso.println("3. See books with quantity greater than " + discount);
+                syso.println("4. See books with quantity less than " + discount);
+                syso.println("Please enter the index number of the type of filter: ");
+                var choice = scan.nextInt();
+                while (true) {
+                    if (choice > 0 && choice < 5) break;
+                    else {
+                        syso.println("Invalid choice, please enter your choice again: ");
+                        choice = scan.nextInt();
+                    }
+                }
+
+                switch (choice) {
+                    case 1:
+                        filteredList = books.stream().filter(it -> it.discount >= discount).collect(Collectors.toList());
+                    case 2:
+                        filteredList = books.stream().filter(it -> it.discount <= discount).collect(Collectors.toList());
+                    case 3:
+                        filteredList = books.stream().filter(it -> it.discount > discount).collect(Collectors.toList());
+                    case 4:
+                        filteredList = books.stream().filter(it -> it.discount < discount).collect(Collectors.toList());
+                }
+
+
+                break;
+            }
+        }
+        if (filteredList.isEmpty()) {
+            syso.println("No items returned for this search parameter.\nEnter 1 to try search again or 2 to return to the main menu");
+            int choice = scan.nextInt();
+            while (true) {
+                if (choice == 1 || choice == 2) break;
+                else {
+                    syso.println("Invalid choice, please try again.\nEnter 1 to try search again or 2 to return to the main menu");
+                    choice = scan.nextInt();
+                }
+            }
+            if (choice == 1) searchRecords();
+            else generateMainMenu();
+        } else workOnFilteredList();
+    }
+
+    private static void workOnFilteredList() {
+        showFilteredRecords();
+        syso.println("Do you want to modify items in the filtered list? Enter 1 for yes, 2 for no: ");
+        int choice = scan.nextInt();
+        while (true) {
+            if (choice == 1 || choice == 2) break;
+            else {
+                syso.println("Invalid choice, please try again.\nDo you want to modify items in the filtered list? Enter 1 for yes, 2 for no: ");
+                choice = scan.nextInt();
+            }
+        }
+        if (choice == 1) {
+            scratchBook = filteredList.get(chooseFilteredBook());
+            modifyBook(false);
+        } else generateMainMenu();
+    }
+
+    private static void showFilteredRecords() {
+        Book book;
+        for (int index = 0; index < filteredList.size(); index++) {
+            book = filteredList.get(index);
+            syso.println(index + 1 + ". " + book.getTitle() + " (vol" + book.getEdition() + ")");
+        }
+        syso.println("\n--------------------------------------------------------------------------");
     }
 
     private static void showAllRecords() {
@@ -269,10 +472,14 @@ public class DriverClass {
         }
 
         switch (selChoice) {
-            case 1 -> viewIndividualRecords(false, true, false);
-            case 2 -> viewIndividualRecords(false, false, true);
-            case 3 -> modifyBook(false);
-            case 4 -> generateMainMenu();
+            case 1:
+                viewIndividualRecords(false, true, false);
+            case 2:
+                viewIndividualRecords(false, false, true);
+            case 3:
+                modifyBook(false);
+            case 4:
+                generateMainMenu();
         }
     }
 
@@ -284,6 +491,19 @@ public class DriverClass {
             if (index <= books.size() && index > 0) break;
             else {
                 syso.println("Index number cannot be less than 1 or greater than " + books.size() + ", please re-enter index:");
+                index = scan.nextInt();
+            }
+        }
+        return index - 1;
+    }
+
+    private static int chooseFilteredBook() {
+        syso.println("Please enter the index number from the filtered list of the books, that you want to modify: ");
+        int index = scan.nextInt();
+        while (true) {
+            if (index <= filteredList.size() && index > 0) break;
+            else {
+                syso.println("Index number cannot be less than 1 or greater than " + filteredList.size() + ", please re-enter index:");
                 index = scan.nextInt();
             }
         }
