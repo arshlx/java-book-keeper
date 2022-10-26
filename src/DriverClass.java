@@ -86,7 +86,6 @@ public class DriverClass {
     }
 
     private static void searchBy(int selChoice) {
-        filteredList.clear();
         switch (selChoice) {
             case 1: {
                 syso.println("Please enter the title: ");
@@ -184,11 +183,22 @@ public class DriverClass {
             case 7: {
                 syso.println("Please enter edition number: ");
                 var edition = scan.nextInt();
-                filteredList = books.stream().filter(it -> it.edition <= edition).collect(Collectors.toList());
+                filteredList = books.stream().filter(it -> it.edition == edition).collect(Collectors.toList());
             }
             case 8: {
             }
             case 9: {
+                syso.println("Please enter the page range.\nMinimum pages: ");
+                var min = scan.nextInt();
+                syso.println("Maximum pages");
+                var max = scan.nextInt();
+                if (max > min)
+                    filteredList = books.stream().filter(it -> it.numPages <= max && it.numPages >= min).collect(Collectors.toList());
+                else if (max == min)
+                    filteredList = books.stream().filter(it -> it.numPages == min).collect(Collectors.toList());
+                else
+                    filteredList = books.stream().filter(it -> it.numPages <= min && it.numPages >= max).collect(Collectors.toList());
+                break;
             }
             case 10: {
                 syso.println("Please enter quantity: ");
