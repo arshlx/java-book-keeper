@@ -11,7 +11,7 @@ public class DriverClass {
     private static final Scanner scan = new Scanner(System.in);
     private static final Gson gson = new Gson();
     private static List<Book> filteredList = List.of();
-    private static Book scratchBook = new Book("test", "1234", 0.99, 1, 0, "Teat Author", 1, "2012", 100, 0);
+    private static Book scratchBook = new Book("test", "1234", 0.99, 1, 0, "Teat Author", 1, 2012, 100, 0);
     private static List<Book> books = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -29,7 +29,7 @@ public class DriverClass {
     }
 
     private static void generateMainMenu() {
-        syso.println("\n1. Show all records\n2. Search for a book.\n3. Add a book.\n4. Delete a book.\n5. Modify book records.\n6. Apply discount to inventory\n7. View individual records\n8. Reset all records\n9. Exit program.");
+        syso.println("\n1. Show all records\n2. Search for a book.\n3. Add a book.\n4. Delete a book.\n5. Modify book records.\n6. Apply discount to inventory\n7. View individual records\n8. Lend out a book\n9. Return a book\n10. Reset all records\n11. Exit program");
         syso.println("Please select the index number of the operation that you want to perform: ");
         int selOption = scan.nextInt();
         switch (selOption) {
@@ -68,11 +68,21 @@ public class DriverClass {
             }
 
             case 8: {
-                purgeAndResetRecords();
+                lendBook();
                 break;
             }
 
             case 9: {
+                returnBook();
+                break;
+            }
+
+            case 10: {
+                purgeAndResetRecords();
+                break;
+            }
+
+            case 11: {
                 System.exit(0);
                 break;
             }
@@ -105,8 +115,8 @@ public class DriverClass {
                 syso.println("Please enter the title: ");
                 scan.nextLine();
                 var searchPhrase = scan.nextLine();
-                var searchWords = searchPhrase.split(" ", 4);
-                filteredList = books.stream().filter(it -> it.title.contains(searchWords[0]) || it.title.contains(searchWords[1]) || it.title.contains(searchWords[2]) || it.title.contains(searchWords[3])).collect(Collectors.toList());
+                syso.println(searchPhrase);
+                filteredList = books.stream().filter(it -> it.title.contains(searchPhrase)).collect(Collectors.toList());
                 break;
             }
             case 2: {
@@ -129,11 +139,11 @@ public class DriverClass {
                 syso.println("Maximum price");
                 var max = scan.nextInt();
                 if (max > min)
-                    filteredList = books.stream().filter(it -> it.price <= max && it.price >= min).collect(Collectors.toList());
+                    filteredList = books.stream().filter(it -> it.discountedPrice <= max && it.price >= min).collect(Collectors.toList());
                 else if (max == min)
-                    filteredList = books.stream().filter(it -> it.price == min).collect(Collectors.toList());
+                    filteredList = books.stream().filter(it -> it.discountedPrice == min).collect(Collectors.toList());
                 else
-                    filteredList = books.stream().filter(it -> it.price <= min && it.price >= max).collect(Collectors.toList());
+                    filteredList = books.stream().filter(it -> it.discountedPrice <= min && it.price >= max).collect(Collectors.toList());
                 break;
             }
             case 5: {
@@ -154,16 +164,23 @@ public class DriverClass {
                 }
 
                 switch (choice) {
-                    case 1:
+                    case 1: {
                         filteredList = books.stream().filter(it -> it.quantity >= quantity).collect(Collectors.toList());
-                    case 2:
+                        break;
+                    }
+                    case 2: {
                         filteredList = books.stream().filter(it -> it.quantity <= quantity).collect(Collectors.toList());
-                    case 3:
+                        break;
+                    }
+                    case 3: {
                         filteredList = books.stream().filter(it -> it.quantity > quantity).collect(Collectors.toList());
-                    case 4:
+                        break;
+                    }
+                    case 4: {
                         filteredList = books.stream().filter(it -> it.quantity < quantity).collect(Collectors.toList());
+                        break;
+                    }
                 }
-
                 break;
             }
             case 6: {
@@ -184,14 +201,22 @@ public class DriverClass {
                 }
 
                 switch (choice) {
-                    case 1:
+                    case 1: {
                         filteredList = books.stream().filter(it -> it.numAvailable >= available).collect(Collectors.toList());
-                    case 2:
+                        break;
+                    }
+                    case 2: {
                         filteredList = books.stream().filter(it -> it.numAvailable <= available).collect(Collectors.toList());
-                    case 3:
+                        break;
+                    }
+                    case 3: {
                         filteredList = books.stream().filter(it -> it.numAvailable > available).collect(Collectors.toList());
-                    case 4:
+                        break;
+                    }
+                    case 4: {
                         filteredList = books.stream().filter(it -> it.numAvailable < available).collect(Collectors.toList());
+                        break;
+                    }
                 }
             }
             case 7: {
@@ -232,14 +257,22 @@ public class DriverClass {
                 }
 
                 switch (choice) {
-                    case 1:
+                    case 1: {
                         filteredList = books.stream().filter(it -> it.discount >= discount).collect(Collectors.toList());
-                    case 2:
+                        break;
+                    }
+                    case 2: {
                         filteredList = books.stream().filter(it -> it.discount <= discount).collect(Collectors.toList());
-                    case 3:
+                        break;
+                    }
+                    case 3: {
                         filteredList = books.stream().filter(it -> it.discount > discount).collect(Collectors.toList());
-                    case 4:
+                        break;
+                    }
+                    case 4: {
                         filteredList = books.stream().filter(it -> it.discount < discount).collect(Collectors.toList());
+                        break;
+                    }
                 }
 
 
@@ -282,7 +315,7 @@ public class DriverClass {
         Book book;
         for (int index = 0; index < filteredList.size(); index++) {
             book = filteredList.get(index);
-            syso.println(index + 1 + ". " + book.getTitle() + " (vol" + book.getEdition() + ")");
+            syso.println(index + 1 + ". " + book.title + " (vol" + book.edition + ")");
         }
         syso.println("\n--------------------------------------------------------------------------");
     }
@@ -291,7 +324,7 @@ public class DriverClass {
         Book book;
         for (int index = 0; index < books.size(); index++) {
             book = books.get(index);
-            syso.println(index + 1 + ". " + book.getTitle() + " (vol" + book.getEdition() + ")");
+            syso.println(index + 1 + ". " + book.title + " (vol" + book.edition + ")");
         }
         syso.println("\n--------------------------------------------------------------------------");
     }
@@ -316,15 +349,15 @@ public class DriverClass {
     }
 
     private static void initDefaultBookList() {
-        books.add(new Book("SAS data analytic development : dimensions of software quality", "1-119-25591-0", 89.99, 3, 0, "Hughes, Troy Martin", 1, "2016", 624, 0));
-        books.add(new Book("Project Management Techniques and Innovations in Information Technology", "9781466609303", 149.99, 5, 2, "Wang, John", 1, "2012", 342, 5));
-        books.add(new Book("The Definitive Guide to Terracotta Cluster the JVM for Spring, Hibernate and POJO Scalability", "1-281-75710-1", 89.99, 7, 6, "Terracotta Inc.", 1, "2008", 364, 0));
-        books.add(new Book("Hands-On Software Engineering with Python: Move Beyond Basic Programming and Construct Reliable and Efficient Software with Complex Code", "1788622014", 89.99, 4, 0, "Allbee, Brian", 1, "01-01-2018", 364, 10));
-        books.add(new Book("Guide to Software Development: Designing and Managing the Life Cycle", "9781447167976", 89.99, 3, 1, "Langer, Arthur M", 1, "2016", 162, 50));
-        books.add(new Book("Making sense of agile project management balancing control and agility", "1-118-01570-3", 89.99, 3, 1, "Cobb, Charles G.", 1, "2011", 245, 15));
-        books.add(new Book("Ethical IT Innovation: A Value-Based System Design Approach", "1482226359", 89.99, 3, 1, "Spiekermann, Sarah", 1, "2016", 283, 30));
-        books.add(new Book("REPEATABILITY RELIABILITY SCALABILITY THROUGH GITOPS", "9781801077798", 89.99, 3, 1, "Bryan Feuling", 1, "2021", 350, 0));
-        books.add(new Book("Industrial Cybersecurity", "9781788395151", 89.99, 3, 1, "Ackerman, Pascal", 1, "2017", 350, 60));
+        books.add(new Book("SAS data analytic development : dimensions of software quality", "1-119-25591-0", 49.99, 3, 0, "Hughes, Troy Martin", 1, 2016, 624, 0));
+        books.add(new Book("Project Management Techniques and Innovations in Information Technology", "9781466609303", 149.99, 5, 2, "Wang, John", 1, 2012, 342, 5));
+        books.add(new Book("The Definitive Guide to Terracotta Cluster the JVM for Spring, Hibernate and POJO Scalability", "1-281-75710-1", 249.99, 7, 6, "Terracotta Inc.", 1, 2008, 364, 0));
+        books.add(new Book("Hands-On Software Engineering with Python: Move Beyond Basic Programming and Construct Reliable and Efficient Software with Complex Code", "1788622014", 349.99, 4, 0, "Allbee, Brian", 1, 2018, 364, 10));
+        books.add(new Book("Guide to Software Development: Designing and Managing the Life Cycle", "9781447167976", 99.99, 3, 1, "Langer, Arthur M", 1, 2016, 162, 50));
+        books.add(new Book("Making sense of agile project management balancing control and agility", "1-118-01570-3", 89.99, 3, 1, "Cobb, Charles G.", 1, 2011, 245, 15));
+        books.add(new Book("Ethical IT Innovation: A Value-Based System Design Approach", "1482226359", 29.99, 3, 1, "Spiekermann, Sarah", 1, 2016, 283, 30));
+        books.add(new Book("REPEATABILITY RELIABILITY SCALABILITY THROUGH GITOPS", "9781801077798", 64.99, 3, 1, "Bryan Feuling", 1, 2021, 350, 0));
+        books.add(new Book("Industrial Cybersecurity", "9781788395151", 399.99, 3, 1, "Ackerman, Pascal", 1, 2017, 350, 60));
 
         try {
             FileWriter writer = new FileWriter("Book Records.txt");
@@ -362,6 +395,9 @@ public class DriverClass {
         if (chooseBook) {
             scratchBook = books.get(chooseBook());
         }
+
+        syso.println("\nTitle: " + scratchBook.title + "\nAuthor: " + scratchBook.authors + "\nISBN: " + scratchBook.isbn + "\nRRP: $" + scratchBook.price + "\nSale price: $" + scratchBook.discountedPrice + "\nQuantity on hand: " + scratchBook.quantity + "\nNumber of books available: " + scratchBook.numAvailable + "\nEdition: " + scratchBook.edition + "\nRelease year: " + scratchBook.releaseYear + "\nNumber of pages: " + scratchBook.numPages + "\nDiscount applied: " + scratchBook.discount + ("%"));
+        syso.println("\n--------------------------------------------------------------------------");
 
         syso.println("1. Title\n2. Author\n3. ISBN\n4. Price\n5. Quantity\n6. Number of books available\n7. Edition\n8. Release year\n9. Number of pages\n10. Apply discount\n11. Go back to main menu");
         syso.println("Please enter the index(serial number) of the field that you would like to change:");
@@ -443,6 +479,30 @@ public class DriverClass {
         }
     }
 
+    private static void lendBook() {
+        scratchBook = books.get(chooseBook());
+        if (scratchBook.numAvailable > 0) {
+            --scratchBook.numAvailable;
+            syso.println("Book lent out, stock updated.");
+        } else {
+            syso.println("Not enough books available in stock, unable to lend out.");
+        }
+        updateRecords();
+        generateMainMenu();
+    }
+
+    private static void returnBook() {
+        scratchBook = books.get(chooseBook());
+        if (scratchBook.numAvailable < scratchBook.quantity) {
+            ++scratchBook.numAvailable;
+            syso.println("Book added to the stock.");
+        } else {
+            syso.println("Unable to return book to record as all available books are already in stock.");
+        }
+        updateRecords();
+        generateMainMenu();
+    }
+
     private static void viewIndividualRecords(boolean chooseBook, boolean nextBook, boolean previousBook) {
         int index;
         if (chooseBook) {
@@ -457,7 +517,7 @@ public class DriverClass {
         } else index = books.indexOf(scratchBook);
 
 
-        syso.println("\nTitle: " + scratchBook.title + "\nAuthor: " + scratchBook.authors + "\nISBN: " + scratchBook.isbn + "\nRRP: $" + scratchBook.price + "\nSale price: $" + scratchBook.discountedPrice + "\nQuantity on hand: " + scratchBook.quantity + "\nNumber of books available: " + scratchBook.numAvailable + "\nEdition: " + scratchBook.edition + "\nRelease year: " + scratchBook.releaseYear + "\nNumber of pages: " + scratchBook.numPages + "\nDiscount applied: " + scratchBook.discount);
+        syso.println("\nTitle: " + scratchBook.title + "\nAuthor: " + scratchBook.authors + "\nISBN: " + scratchBook.isbn + "\nRRP: $" + scratchBook.price + "\nSale price: $" + scratchBook.discountedPrice + "\nQuantity on hand: " + scratchBook.quantity + "\nNumber of books available: " + scratchBook.numAvailable + "\nEdition: " + scratchBook.edition + "\nRelease year: " + scratchBook.releaseYear + "\nNumber of pages: " + scratchBook.numPages + "\nDiscount applied: " + scratchBook.discount + ("%"));
         syso.println("\n--------------------------------------------------------------------------");
         int selChoice;
         if (index == books.size() - 1) {
@@ -496,14 +556,22 @@ public class DriverClass {
         }
 
         switch (selChoice) {
-            case 1:
+            case 1: {
                 viewIndividualRecords(false, true, false);
-            case 2:
+                break;
+            }
+            case 2: {
                 viewIndividualRecords(false, false, true);
-            case 3:
+                break;
+            }
+            case 3: {
                 modifyBook(false);
-            case 4:
+                break;
+            }
+            case 4: {
                 generateMainMenu();
+                break;
+            }
         }
     }
 

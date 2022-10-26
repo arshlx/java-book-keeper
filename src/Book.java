@@ -12,11 +12,11 @@ public class Book {
     int numAvailable;
     String authors;
     int edition;
-    String releaseYear;
+    int releaseYear;
     int numPages;
     double discount;
 
-    public Book(String title, String isbn, Double price, int quantity, int numAvailable, String authors, int edition, String releaseYear, int numPages, double discount) {
+    public Book(String title, String isbn, Double price, int quantity, int numAvailable, String authors, int edition, int releaseYear, int numPages, double discount) {
         this.title = title;
         this.isbn = isbn;
         this.price = price;
@@ -43,22 +43,6 @@ public class Book {
         return isValid;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
     public void setQuantity(boolean setAvailable) {
         if (setAvailable) {
             numAvailable = 0;
@@ -74,25 +58,6 @@ public class Book {
         this.quantity = quantity;
     }
 
-    public int numAvailable() {
-        return numAvailable;
-    }
-
-    public String getAuthors() {
-        return authors;
-    }
-
-    public int getEdition() {
-        return edition;
-    }
-
-    public String getReleaseYear() {
-        return releaseYear;
-    }
-
-    public double getDiscount() {
-        return discount;
-    }
 
     public void createNewBook() {
         syso.println("Note: none of the fields can be empty or 0 with the exception of number of books available\n");
@@ -190,13 +155,16 @@ public class Book {
     }
 
     public void setReleaseYear() {
-        syso.println("Please enter the release year of the book ");
-        String releaseYear = scan.next();
+        syso.println("Please enter the release year of the book in 'yyyy' format (minimum 1500, maximum 2022): ");
+        int releaseYear = scan.nextInt();
+        while (true) {
+            if (releaseYear > 1499 && releaseYear < 2023) break;
+            else {
+                syso.println("Invalid year, please try again: ");
+                releaseYear = scan.nextInt();
+            }
+        }
         this.releaseYear = releaseYear;
-    }
-
-    public int getNumPages() {
-        return numPages;
     }
 
     public void setNumPages() {
