@@ -36,31 +36,46 @@ public class DriverClass {
             case 1: {
                 showAllRecords();
                 generateMainMenu();
+                break;
             }
 
-            case 2:
+            case 2: {
                 searchRecords();
+                break;
+            }
 
-            case 3:
+            case 3: {
                 addBook();
+                break;
+            }
 
-            case 4:
+            case 4: {
                 deleteBook();
+                break;
+            }
 
             case 5:
                 modifyBook(true);
 
-            case 6:
+            case 6: {
                 discountInventory();
+                break;
+            }
 
-            case 7:
+            case 7: {
                 viewIndividualRecords(true, false, false);
+                break;
+            }
 
-            case 8:
+            case 8: {
                 purgeAndResetRecords();
+                break;
+            }
 
-            case 9:
+            case 9: {
                 System.exit(0);
+                break;
+            }
 
             default: {
                 syso.println("Invalid choice, please select again.\n");
@@ -74,8 +89,7 @@ public class DriverClass {
         syso.println("Please enter index number of your search parameter: ");
         var selChoice = scan.nextInt();
         while (true) {
-            if (selChoice > 0 && selChoice < 10)
-                break;
+            if (selChoice > 0 && selChoice < 10) break;
             else {
                 syso.println("Invalid choice, please try again.");
                 syso.println("Please enter index number of your search parameter: ");
@@ -443,7 +457,7 @@ public class DriverClass {
         } else index = books.indexOf(scratchBook);
 
 
-        syso.println("\nTitle: " + scratchBook.title + "\nAuthor: " + scratchBook.authors + "\nISBN: " + scratchBook.isbn + "RRP: $" + scratchBook.price + "\nSale price: " + scratchBook.discountedPrice + "\nQuantity on hand: " + scratchBook.quantity + "\nNumber of books available: " + scratchBook.numAvailable + "\nEdition: " + scratchBook.edition + "\nRelease year: " + scratchBook.releaseYear + "\nNumber of pages: " + scratchBook.numPages + "\nDiscount applied: " + scratchBook.discount);
+        syso.println("\nTitle: " + scratchBook.title + "\nAuthor: " + scratchBook.authors + "\nISBN: " + scratchBook.isbn + "\nRRP: $" + scratchBook.price + "\nSale price: $" + scratchBook.discountedPrice + "\nQuantity on hand: " + scratchBook.quantity + "\nNumber of books available: " + scratchBook.numAvailable + "\nEdition: " + scratchBook.edition + "\nRelease year: " + scratchBook.releaseYear + "\nNumber of pages: " + scratchBook.numPages + "\nDiscount applied: " + scratchBook.discount);
         syso.println("\n--------------------------------------------------------------------------");
         int selChoice;
         if (index == books.size() - 1) {
@@ -521,17 +535,17 @@ public class DriverClass {
     }
 
     private static void discountInventory() {
-        syso.println("To discount all inventory enter 0, to discount individual books, enter 0: ");
+        syso.println("To discount all inventory enter 0, to discount individual books, enter 1: ");
         int selChoice = scan.nextInt();
         while (true) {
             if (selChoice == 0 || selChoice == 1) break;
             else {
                 syso.println("Invalid entry, please try again.");
-                syso.println("To discount all inventory enter 0, to discount individual books, enter 0: ");
+                syso.println("To discount all inventory enter 0, to discount individual books, enter 1: ");
                 selChoice = scan.nextInt();
             }
         }
-        if (selChoice == 1) applyBulkDiscount();
+        if (selChoice == 0) applyBulkDiscount();
         else applyIndividualDiscount();
     }
 

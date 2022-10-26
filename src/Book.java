@@ -110,6 +110,7 @@ public class Book {
     public void setTitle() {
         syso.println("Please enter book title: ");
         String title = scan.nextLine();
+
         while (true) {
             if (title.length() < 2) {
                 syso.println("Title cannot be empty or contain just 1 character, please re-enter the title:");
@@ -145,7 +146,7 @@ public class Book {
     }
 
     public void updateDiscountedPrice() {
-        discountedPrice = price * (100.00 - discount) * 100.00;
+        discountedPrice = price * (100 - discount) / 100;
     }
 
     public void setNumAvailable() {
@@ -212,11 +213,11 @@ public class Book {
 
     public void setDiscount() {
         syso.println("Please enter discount percentage between 0-100: ");
-        double discount = scan.nextInt();
+        double discount = scan.nextDouble();
         while (true) {
             if (discount < 0.00 || discount > 100.00) {
                 syso.println("Discount can only be a number between 0-100, please re-enter discount: ");
-                discount = scan.nextInt();
+                discount = scan.nextDouble();
             } else break;
         }
         this.discount = discount;
